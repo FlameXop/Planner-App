@@ -1,5 +1,5 @@
 # Planner App
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/FlameXop/Planner-App)
+
 
 Tezuka Planner is a web-based task management application designed for teams. It features role-based access control, multiple workspaces, and dual viewing modes (Grid and Kanban). The application is built with vanilla JavaScript and uses the browser's `localStorage` for all data persistence, allowing it to run entirely on the client-side.
 
