@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tezuka — Login / Sign Up</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #1a1a1a;
+      padding: 40px;
+      border-radius: 12px;
+      width: 360px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 6px;
+      background: #2a2a2a;
+      color: white;
+    }
+
+    button {
+      width: 95%;
+      padding: 10px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #ffbb33;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #ffc94a;
+    }
+
+    .toggle {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    .toggle:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #333;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #ccc;
+      transition: 0.2s;
+    }
+
+    .tab.active {
+      color: #ffbb33;
+      border-bottom: 2px solid #ffbb33;
+    }
+
+    .error {
+      color: #ff4444;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tabs">
+      <div id="adminTab" class="tab active">Admin</div>
+      <div id="employeeTab" class="tab">Employee</div>
+    </div>
+
+    <h2 id="form-title">Admin Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="auth-btn">Login</button>
+    <div class="error" id="error-msg"></div>
+
+    <div class="toggle" id="toggleForm">Don’t have an account? Sign up</div>
+  </div>
+
+  <script>
+    const formTitle = document.getElementById("form-title");
+    const authBtn = document.getElementById("auth-btn");
+    const toggleForm = document.getElementById("toggleForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const errorMsg = document.getElementById("error-msg");
+    const adminTab = document.getElementById("adminTab");
+    const employeeTab = document.getElementById("employeeTab");
+
+    let isLogin = true;
+    let currentRole = "admin";
+
+    // Tab switching
+    adminTab.addEventListener("click", () => switchRole("admin"));
+    employeeTab.addEventListener("click", () => switchRole("employee"));
+
+    function switchRole(role) {
+      currentRole = role;
+      adminTab.classList.toggle("active", role === "admin");
+      employeeTab.classList.toggle("active", role === "employee");
+      formTitle.textContent = `${capitalize(role)} Login`;
+      authBtn.textContent = "Login";
+      isLogin = true;
+      toggleForm.textContent = "Don’t have an account? Sign up";
+      errorMsg.textContent = "";
+      emailInput.value = "";
+      passwordInput.value = "";
+    }
+
+    toggleForm.addEventListener("click", () => {
+      isLogin = !isLogin;
+      formTitle.textContent = isLogin
+        ? `${capitalize(currentRole)} Login`
+        : `Create ${capitalize(currentRole)} Account`;
+      authBtn.textContent = isLogin ? "Login" : "Sign Up";
+      toggleForm.textContent = isLogin
+        ? "Don’t have an account? Sign up"
+        : "Already have an account? Login";
+      errorMsg.textContent = "";
+    });
+
+    authBtn.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!email || !password) {
+        errorMsg.textContent = "Please fill all fields.";
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("tezukaUsers")) || {};
+
+      if (isLogin) {
+        // Login logic
+        if (!users[email]) {
+          errorMsg.textContent = "No such account found!";
+          return;
+        }
+
+        if (users[email].role !== currentRole) {
+          errorMsg.textContent =
+            currentRole === "admin"
+              ? "Employees can't log in here."
+              : "Admins can't log in here.";
+          return;
+        }
+
+        if (users[email].password === password) {
+          localStorage.setItem("tezukaUserRole", currentRole);
+          localStorage.setItem("tezukaUserEmail", email);
+          window.location.href = "index.html";
+        } else {
+          errorMsg.textContent = "Invalid credentials!";
+        }
+      } else {
+        // Sign up logic
+        if (users[email]) {
+          errorMsg.textContent = "Account already exists!";
+          return;
+        }
+        users[email] = { password, role: currentRole };
+        localStorage.setItem("tezukaUsers", JSON.stringify(users));
+        alert(`${capitalize(currentRole)} account created successfully!`);
+        toggleForm.click(); // Switch back to login view
+      }
+    });
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+  </script>
+</body>
+</html>

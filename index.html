@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tezuka Planner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Welcome overlay -->
+  <div id="welcome-screen">
+    <h1>Welcome to Tezuka Workspace</h1>
+  </div>
+
+  <!-- Role Display -->
+  <div id="roleDisplay" class="text-sm text-gray-400 absolute top-2 right-32"></div>
+
+  <!-- App -->
+  <div id="app">
+    <header>
+      <div class="brand">Tezuka</div>
+
+      <div class="header-right">
+        <!-- Notifications -->
+        <div class="notif-wrapper">
+          <span id="notifications-btn" class="notif-icon" title="Notifications">🔔</span>
+          <span id="notif-count" class="hidden">0</span>
+          <div id="notif-panel" class="notif-dropdown hidden">
+            <div id="notif-list">
+              <div class="no-notifs">No notifications</div>
+            </div>
+            <button id="clear-notifs" class="clear-btn" style="display:none;">Clear All</button>
+          </div>
+        </div>
+
+        <!-- Profile -->
+        <div class="profile-wrapper">
+          <span id="profile-btn" class="icon" title="Profile">👤</span>
+          <div id="profile-dropdown" class="notif-dropdown hidden">
+            <button id="update-pic" class="clear-btn">Update Profile Picture</button>
+            <button id="logout-btn" class="clear-btn">Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Workspace Tabs Row -->
+    <div class="workspace-bar">
+      <div class="tabs" id="workspace-tabs">
+        <button class="workspace-tab active" data-ws="1">Workspace 1</button>
+      </div>
+      <div class="workspace-actions">
+        <button id="add-workspace-btn" class="ghost-btn">+ Add Workspace</button>
+        <button id="add-task-btn" class="primary-btn">+ Add Task</button>
+      </div>
+    </div>
+
+    <div class="body">
+      <aside class="sidebar">
+        <button class="sidebar-btn active" id="grid-view-btn">Grid View</button>
+        <button class="sidebar-btn" id="kanban-view-btn">Kanban View</button>
+      </aside>
+
+      <main class="workspace">
+        <!-- Grid view container -->
+        <section id="grid-view" class="view active-view">
+          <div class="list" id="task-list"></div>
+        </section>
+
+        <!-- Kanban view container -->
+        <section id="kanban-view" class="view">
+          <div class="kanban-board" id="kanban-board"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Task modal -->
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-panel">
+      <h2 id="modal-title">Create Task</h2>
+      <form id="task-form">
+        <input type="hidden" name="taskId" value="" />
+        <label>Title
+          <input type="text" name="title" required maxlength="140" placeholder="Task title" />
+        </label>
+
+        <label>Deadline
+          <input type="date" name="deadline" />
+        </label>
+
+        <label>Assign to (email)
+          <input type="email" name="assignedTo" placeholder="teammate@example.com" required />
+        </label>
+
+        <label>Priority
+          <select name="priority">
+            <option>To Start</option>
+            <option>In Progress</option>
+            <option>Unimportant</option>
+            <option>Completed</option>
+          </select>
+        </label>
+
+        <label>Comment
+          <textarea name="comment" rows="3" placeholder="Add a quick note"></textarea>
+        </label>
+
+        <label>Attachment (link or image)
+          <input type="text" name="attachment" placeholder="Paste image URL or other link" />
+          <small class="muted">You can paste an image URL or an external link.</small>
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" id="cancel-task" class="ghost-btn">Cancel</button>
+          <button type="submit" class="primary-btn">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- toast area -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- scripts (data → views → app) -->
+  <script src="tasks.js"></script>
+  <script src="gridView.js"></script>
+  <script src="kanbanView.js"></script>
+  <script src="app.js"></script>
+  <!-- Keep script.js last; it only does welcome fade now -->
+  <script src="script.js"></script>
+</body>
+</html>

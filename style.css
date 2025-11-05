@@ -1,0 +1,374 @@
+:root{
+  --bg: #000;
+  --panel: #0a0a0a;
+  --muted: #999;
+  --accent: #cfcfcf;
+  --glass: rgba(255,255,255,0.04);
+  --radius: 8px;
+  --gap: 14px;
+  --primary: #111;
+  --white: #fff;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color:var(--white);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow:hidden;
+}
+
+/* Welcome overlay (glassy translucent) */
+#welcome-screen{
+  position:fixed; inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+  background: rgba(0,0,0,0.28);
+  backdrop-filter: blur(18px) brightness(0.85);
+  transition: opacity .9s ease, backdrop-filter .9s ease;
+}
+#welcome-screen h1{
+  font-size:3rem;
+  letter-spacing:0.4px;
+  text-shadow:0 0 18px rgba(255,255,255,0.12);
+  margin:0;
+  padding:0 20px;
+  text-align:center;
+}
+#welcome-screen.fade-out{opacity:0;backdrop-filter: blur(0) brightness(1); pointer-events:none}
+
+/* App layout */
+#app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  opacity:1;
+  filter: blur(12px); /* blurred behind welcome */
+  transition:filter .9s ease;
+}
+#app.visible{filter: blur(0)}
+
+header{
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  border-bottom:1px solid #111;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+}
+.brand{font-weight:700;font-size:1.35rem;letter-spacing:0.6px}
+.icon-btn{background:none;border:0;color:var(--muted);font-size:1.15rem;cursor:pointer;margin-left:10px}
+.header-right{display:flex;align-items:center}
+
+/* workspace tabs */
+.workspace-bar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:10px 18px;
+  border-bottom:1px solid #111;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+}
+.tabs{display:flex; gap:8px; align-items:center}
+.workspace-tab{
+  background:none;border:1px solid #222;padding:8px 12px;border-radius:6px;color:var(--white);cursor:pointer;font-weight:600;
+}
+.workspace-tab.active{background:#111;border-color:#333}
+.workspace-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+/* buttons */
+.primary-btn{
+  background:#111;border:1px solid #333;padding:8px 12px;border-radius:6px;color:var(--white);cursor:pointer;font-weight:600;
+}
+.ghost-btn{background:transparent;border:1px dashed #2a2a2a;padding:8px 10px;border-radius:6px;color:var(--muted);cursor:pointer}
+.primary-btn:hover, .ghost-btn:hover{opacity:.95}
+
+/* body layout */
+.body{display:flex;flex:1;min-height:0}
+.sidebar{
+  width:180px;background:var(--panel);border-right:1px solid #111;display:flex;flex-direction:column;align-items:center;padding-top:26px;
+}
+.sidebar-btn{width:80%;text-align:left;background:transparent;border:1px solid #222;color:var(--muted);padding:10px;border-radius:6px;margin:8px 0;cursor:pointer}
+.sidebar-btn.active{background:#111;color:var(--white);border-color:#333}
+.sidebar-btn:hover{background:#0f0f0f}
+
+/* workspace area */
+.workspace{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:18px;overflow:auto}
+.view{width:100%;height:100%;display:none}
+.view.active-view{display:block}
+
+/* Grid / List view */
+.list{max-width:1100px;width:100%;display:flex;flex-direction:column;gap:12px;padding:10px}
+.task-card{
+  display:flex;gap:12px;align-items:flex-start;background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);border-radius:10px;padding:12px;border:1px solid #141414;
+  box-shadow: 0 2px 0 rgba(255,255,255,0.01);
+}
+.notif-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notif-icon {
+  cursor: pointer;
+  position: relative;
+  font-size: 1.3rem;
+  color: var(--white);
+}
+
+#notif-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+
+.notif-dropdown {
+  position: absolute;
+  top: 2.2rem;
+  right: 0;
+  background: var(--panel);
+  color: var(--white);
+  min-width: 230px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 999;
+  padding: 10px;
+}
+
+.notif-dropdown.hidden {
+  display: none;
+}
+
+.no-notifs {
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.clear-btn {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+.avatar{
+  width:48px;height:48px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--white);flex-shrink:0;
+  font-size:14px;border:1px solid #2a2a2a;
+}
+.task-main{flex:1;display:flex;flex-direction:column}
+.task-title{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:10px}
+.badge{padding:3px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(255,255,255,0.04);background:#111;color:var(--accent)}
+.task-meta{margin-top:6px;color:var(--muted);font-size:0.92rem;display:flex;gap:12px;align-items:center}
+.task-comment{margin-top:8px;color:var(--accent);font-size:0.95rem}
+.task-attachment{margin-top:8px;font-size:0.9rem;color:var(--muted)}
+.task-actions{margin-left:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.small-btn{background:transparent;border:1px solid #222;padding:6px 8px;border-radius:6px;color:var(--muted);cursor:pointer}
+
+/* Kanban */
+.kanban-board{display:flex;gap:12px;width:100%;padding:8px;align-items:flex-start;justify-content:flex-start;overflow:auto}
+.kanban-column{
+  min-width:260px;background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:8px;padding:10px;border:1px solid #151515;
+  display:flex;flex-direction:column;gap:10px;max-height:75vh;overflow:auto;
+}
+.col-header{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:6px}
+.col-count{font-size:0.85rem;color:var(--muted)}
+.kanban-card{background:#070707;border-radius:8px;padding:10px;border:1px solid #242424;cursor:grab}
+.kanban-card:active{cursor:grabbing}
+.kanban-card .k-title{font-weight:700}
+.col-drop{
+  min-height:20px;border-radius:6px;padding:8px;transition:background .15s ease;
+}
+.col-drop.drag-over{background:rgba(255,255,255,0.02)}
+
+/* modal */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);backdrop-filter: blur(6px);z-index:1200}
+.modal.hidden{display:none}
+.modal-panel{background:var(--panel);border-radius:10px;padding:18px;width:420px;border:1px solid #161616}
+.modal-panel h2{margin:0 0 10px 0}
+.modal-panel form{display:flex;flex-direction:column;gap:10px}
+.modal-panel label{display:flex;flex-direction:column;font-size:0.95rem;color:var(--muted)}
+.modal-panel input[type="text"], .modal-panel input[type="email"], .modal-panel input[type="date"], .modal-panel select, .modal-panel textarea{
+  margin-top:6px;padding:8px;border-radius:6px;background:#070707;border:1px solid #222;color:var(--white);
+}
+.muted{color:var(--muted);font-size:0.8rem}
+
+/* toast */
+.toast{position:fixed;right:20px;bottom:20px;background:#111;border:1px solid #222;color:var(--white);padding:8px 12px;border-radius:8px;z-index:1300}
+.toast.hidden{display:none}
+
+/* small responsiveness */
+@media (max-width:900px){
+  .sidebar{display:none}
+  .workspace-bar{padding:8px}
+  .modal-panel{width:92%}
+}
+/* Notification & Profile Wrappers */
+.notif-wrapper, .profile-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Notification icon */
+.notif-icon {
+  cursor: pointer;
+  position: relative;
+  font-size: 1.4rem;
+  color: var(--white);
+  margin-left: 10px;
+}
+
+/* Count badge */
+#notif-count {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+
+/* Dropdown common styles */
+.notif-dropdown {
+  position: absolute;
+  top: 2.4rem;
+  right: 0; /* ✅ fixes your issue: aligns dropdowns properly on right edge */
+  background: var(--panel);
+  color: var(--white);
+  min-width: 230px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  padding: 10px;
+  display: none;
+}
+
+.notif-dropdown.hidden {
+  display: none;
+}
+
+.notif-dropdown:not(.hidden) {
+  display: block;
+}
+
+.no-notifs {
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.clear-btn {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+.clear-btn:hover {
+  background: #555;
+}
+
+/* Profile dropdown */
+#profile-btn {
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--white);
+  margin-left: 15px;
+}
+
+#profile-dropdown {
+  position: absolute;
+  top: 2.4rem;
+  right: 0; /* ✅ now appears properly on right side */
+  background: var(--panel);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  padding: 10px;
+  display: none;
+}
+
+#profile-dropdown:not(.hidden) {
+  display: block;
+}
+/* Header container already exists */
+.header-right{display:flex;align-items:center;gap:10px}
+
+/* Notification & Profile */
+.notif-wrapper, .profile-wrapper { position: relative; display: inline-block; }
+
+.notif-icon, #profile-btn {
+  cursor: pointer;
+  position: relative;
+  font-size: 1.3rem;
+  color: var(--white);
+}
+
+#notif-count{
+  position:absolute; top:-6px; right:-8px;
+  background:red; color:#fff; font-size:.7rem; padding:2px 5px; border-radius:50%;
+}
+
+.notif-dropdown{
+  position:absolute; top:2.2rem; right:0; /* ✅ right-aligned (fixes cutoff) */
+  background: var(--panel); color: var(--white);
+  min-width: 230px; border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.55);
+  z-index: 2000; padding:10px; display:none;
+}
+.notif-dropdown.hidden{ display:none; }
+.notif-dropdown:not(.hidden){ display:block; }
+
+.no-notifs{ margin:0; padding:8px; text-align:center; color:var(--muted); font-size:0.9rem; }
+.clear-btn{
+  background:#333; color:#fff; border:none; padding:6px 10px; border-radius:6px; margin-top:8px; cursor:pointer; width:100%;
+}
+.clear-btn:hover{ background:#4a4a4a; }
+/* Profile modal */
+.profile-modal {
+  width: 360px;
+  text-align: center;
+}
+.profile-modal img.profile-pic-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  margin-bottom: 12px;
+}
+.profile-modal input {
+  margin-top: 6px;
+  padding: 8px;
+  background: #070707;
+  border: 1px solid #222;
+  border-radius: 6px;
+  color: white;
+}
